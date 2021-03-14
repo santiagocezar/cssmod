@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"io"
 	"math/rand"
-	"os"
 
 	"github.com/tdewolff/parse/v2"
 	"github.com/tdewolff/parse/v2/css"
@@ -44,14 +43,14 @@ func Transform(r io.Reader, filename string) (output []byte, classes map[string]
 			if parsingClass {
 				parsingClass = false
 				orig := string(text)
-				gen := generateClassName("stdin", orig)
+				gen := generateClassName(filename, orig)
 				classes[orig] = gen
-				os.Stdout.WriteString(gen)
+				output = append(output, gen...)
 			} else {
-				os.Stdout.Write(text)
+				output = append(output, text...)
 			}
 		default:
-			os.Stdout.Write(text)
+			output = append(output, text...)
 		}
 	}
 
