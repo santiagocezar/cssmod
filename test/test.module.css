@@ -1,13 +1,17 @@
-.badButton {
-    background-color: red;
-    color: white;
-}
-
-.goodButton {
+.button {
     background-color: green;
     color: white;
 }
 
-body {
-    color: purple;
+@scope bad {
+    .button {
+        background-color: red;
+        color: white;
+    }
+}
+
+@scope global {
+    body {
+        color: purple;
+    }
 }

@@ -1,7 +1,10 @@
 # cssmod
 
-This is a really basic implementation of 
+This is a really basic preprocessor inspired by 
 [CSS Modules](https://github.com/css-modules/css-modules). 
 
 Here are the supported features (currently):
-- Namespaced classes
+- Default local scope
+- Multiple scopes in one file
+- Optional global scope
+

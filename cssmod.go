@@ -33,7 +33,11 @@ func Transform(r io.Reader, filename string) (output []byte, classes map[string]
 	safeName := re.ReplaceAllString(strings.TrimSuffix(filename, ".module.css"), "-")
 	id := hash(parser.Bytes())
 
+	parsingAtScope := false
 	parsingClass := false
+
+	scope := ""
+	depth := 0
 
 	for {
 		tt, text := lexer.Next()
@@ -43,13 +47,32 @@ func Transform(r io.Reader, filename string) (output []byte, classes map[string]
 				fmt.Printf("An error ocurred: %v", lexer.Err())
 			}
 			return
+		case css.AtKeywordToken:
+			if string(text) == "@scope" {
+				parsingAtScope = true
+			}
+		case css.LeftBraceToken:
+			depth++
+			if scope == "" || depth != 1 {
+				output = append(output, text...)
+			}
+		case css.RightBraceToken:
+			depth--
+			if scope == "" || depth != 1 {
+				output = append(output, text...)
+			} else {
+				scope = ""
+			}
 		case css.DelimToken:
 			if len(text) == 1 && text[0] == 46 { // a period
 				parsingClass = true
 			}
-			output = append(output, text...)
+			fallthrough
 		case css.IdentToken:
-			if parsingClass {
+			if parsingAtScope {
+				parsingAtScope = false
+				scope = string(text)
+			} else if parsingClass {
 				parsingClass = false
 				orig := string(text)
 				gen := safeName + "_" + orig + "_" + id
