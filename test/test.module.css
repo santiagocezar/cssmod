@@ -1,0 +1,13 @@
+.badButton {
+    background-color: red;
+    color: white;
+}
+
+.goodButton {
+    background-color: green;
+    color: white;
+}
+
+body {
+    color: purple;
+}
